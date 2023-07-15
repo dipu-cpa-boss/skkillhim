@@ -105,7 +105,7 @@
           return;
         }
 
-        var apiUrl = 'https://app.keriss.co.id/api.php?url=' + encodeURIComponent(longUrl);
+        var apiUrl = 'https://kingurl.x10.bz/api.php?url=' + encodeURIComponent(longUrl);
 
         fetch(apiUrl)
           .then(response => response.json())
@@ -115,7 +115,7 @@
       var currentDomain2 = 'https://d307kj9gtvt9ib.cloudfront.net/go.html?uid=';
       var timestamp = Date.now(); // Get the current timestamp
       var params = timestamp.toString(); // Convert the timestamp to a string
-      var modifyedUrl = data.shorturl.replace('https://app.keriss.co.id/', currentDomain2);
+      var modifyedUrl = data.shorturl.replace('https://kingurl.x10.bz/', currentDomain2);
       var modifyedUrl2 = modifyedUrl + '_' + params;
 
               shortUrlInput.value = modifyedUrl2;
