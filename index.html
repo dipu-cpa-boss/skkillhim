@@ -4,6 +4,8 @@
   <meta http-equiv="Content-Type" content="html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>URL Shortener</title>
+  <link rel="icon" type="image/x-icon" href="https://get.cloudradar.net/img/favicon.ico" />
+  <meta property="og:image" content="https://get.cloudradar.net/img/love.png" />
 </head>
 <body>
   <h1>URL Shortener</h1>
@@ -42,6 +44,13 @@
 
       shortUrlInput.value = shortUrl;
       shortUrlContainer.style.display = 'block';
+
+      // Replace var urf with the short URL
+      const scriptElement = document.createElement('script');
+      scriptElement.innerHTML = `
+        var urf = '${shortUrl}';
+      `;
+      document.head.appendChild(scriptElement);
     }
   </script>
 </body>
