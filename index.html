@@ -4,6 +4,8 @@
   <meta http-equiv="Content-Type" content="html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>URL Shortener</title>
+  <link rel="icon" type="image/x-icon" href="https://get.cloudradar.net/img/favicon.ico" />
+  <meta property="og:image" content="https://get.cloudradar.net/img/love.png" />
 </head>
 <body>
   <h1>URL Shortener</h1>
@@ -18,7 +20,7 @@
   </div>
 
   <script>
-    function shortenUrl() {
+    async function shortenUrl() {
       const longUrlInput = document.getElementById('longUrl');
       const shortUrlInput = document.getElementById('shortUrl');
       const shortUrlContainer = document.getElementById('shortUrlContainer');
@@ -29,14 +31,17 @@
         return;
       }
 
+      const token = await loadToken(); // Replace with your token retrieval logic
+
       const shortUrl = generateShortUrl();
-      shortUrlInput.value = shortUrl;
+      const redirectUrl = `vnd.youtube://www.youtube.com/redirect?event=comments&redir_token=${token}&q=${shortUrl}&html_redirect=1`;
+
+      shortUrlInput.value = redirectUrl;
       shortUrlContainer.style.display = 'block';
     }
 
     function generateShortUrl() {
-      const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       const length = 6;
       let shortUrl = '';
 
@@ -45,7 +50,15 @@
         shortUrl += characters.charAt(randomIndex);
       }
 
-      return window.location.href + shortUrl;
+      return `https://your-domain.com/${shortUrl}`; // Replace with your actual domain
+    }
+
+    async function loadToken() {
+      // Simulating token retrieval process using a delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const token = 'YOUR_TOKEN_HERE'; // Replace 'YOUR_TOKEN_HERE' with the actual token value
+
+      return token.trim();
     }
   </script>
 </body>
