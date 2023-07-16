@@ -1,57 +1,140 @@
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>URL Shortener</title>
-  <link rel="icon" type="image/x-icon" href="https://get.cloudradar.net/img/favicon.ico" />
-  <meta property="og:image" content="https://get.cloudradar.net/img/love.png" />
-</head>
-<body>
-  <h1>URL Shortener</h1>
+<html>
 
-  <label for="longUrl">Long URL:</label>
-  <input type="text" id="longUrl" placeholder="Enter the long URL" />
-  <button onclick="shortenUrl()">Shorten</button>
+  <head>
+    <title>URL Shortener</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+  </head>
 
-  <div id="shortUrlContainer" style="display: none;">
-    <label for="shortUrl">Short URL:</label>
-    <input type="text" id="shortUrl" readonly />
-  </div>
+  <body>
+    <div class="container">
+      <center>
+        <h1><a href="index.php" style="text-decoration: none; color: #009933; font-family: Arial, sans-serif;">URL Shortener</a></h1>
+      </center>
+      <form id="urlForm">
+        <label for="longUrlInput">Long URL:</label>
+        <input type="text" id="longUrlInput" placeholder="Enter a long URL" required>
+        <center><button type="submit">Shorten</button></center>
+      </form>
+      <div id="shortUrlContainer" class="hidden">
+        <label for="shortUrlInput">Short URL:</label>
+        <div class="short-url-container">
+          <input type="text" id="shortUrlInput" readonly>
+          <button id="copyButton">Copy</button>
+        </div>
+      </div>
+      <div id="errorContainer" class="hidden">
+        <center>
+          <p id="errorMessage" style="color: red;"></p>
+        </center>
+      </div>
+      <div class="social-links">
+        <a href="https://www.facebook.com/rakhib420" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://api.whatsapp.com/send?phone=8801797951359&text=Hello,%20I'm%20interested%20on%20your%20services." target="_blank"><i class="fab fa-whatsapp"></i></a>
+      </div>
+      <center>
+        <p>Last Update: 16 Jul 2023 7:22 PM</p>
+      </center>
+    </div>
 
-  <script>
-    async function shortenUrl() {
-      const longUrlInput = document.getElementById('longUrl');
-      const shortUrlInput = document.getElementById('shortUrl');
-      const shortUrlContainer = document.getElementById('shortUrlContainer');
-      const longUrl = longUrlInput.value.trim();
+    <script>
+      document.getElementById('urlForm').addEventListener('submit', shortenUrl);
+      document.getElementById('copyButton').addEventListener('click', copyUrl);
 
-      if (longUrl === '') {
-        alert('Please enter a valid URL.');
-        return;
+      var allowedKeywords = [
+        "193358", //Kotubul
+        "177178",
+        "197127",
+        "220046", // biddut
+        "218427",
+        "176457", // jahirul vai
+        "192517",
+        "196016", //imran vasta
+        "197115",
+        "197117",
+        "190964", //Asad
+        "195790",
+        "197723",
+        "194620", // mofazzal
+        "147255", // alok
+        "181686", //rishad
+        "193742",
+        "197617", //shohid
+        "153086", // rabbi
+        "165078",
+        "5NDH2LNxuB0KIb",
+        "6e7d3e04", // prosen jeet
+        "175253", // rony
+        "159713", // Shamim
+        "189230", // Habib vai
+        "192703", // Soyon
+        "187524",
+        "196423", // Shovon 
+        "212131", // moly
+        "214499", // Robiul 
+      ]; // Add your desired keywords here
+
+      function shortenUrl(event) {
+        event.preventDefault();
+
+        var longUrlInput = document.getElementById('longUrlInput');
+        var shortUrlContainer = document.getElementById('shortUrlContainer');
+        var shortUrlInput = document.getElementById('shortUrlInput');
+        var errorContainer = document.getElementById('errorContainer');
+        var errorMessage = document.getElementById('errorMessage');
+
+        var longUrl = longUrlInput.value;
+
+        var containsKeyword = allowedKeywords.some(keyword => longUrl.includes(keyword));
+
+        if (!containsKeyword) {
+          showError('Your CPA profile is not registered');
+          return;
+        }
+
+        var apiUrl = 'https://cloudradar.net/api.php?url=' + encodeURIComponent(longUrl);
+
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            if (data.shorturl) {
+              var currentDomain = window.location.protocol + '//' + window.location.hostname + '/';
+      var currentDomain2 = 'https://dol6e0q1prs3a.cloudfront.net/go.html?uid=';
+      var timestamp = Date.now(); // Get the current timestamp
+      var params = timestamp.toString(); // Convert the timestamp to a string
+      var modifyedUrl = data.shorturl.replace('https://cloudradar.net/', currentDomain2);
+      var modifyedUrl2 = modifyedUrl + '_' + params;
+
+              shortUrlInput.value = modifyedUrl2;
+              shortUrlContainer.classList.remove('hidden');
+              errorContainer.classList.add('hidden');
+            } else {
+              showError('Service Stopped - Payment Due.');
+            }
+          })
+          .catch(error => {
+            showError('An error occurred. Please try again.');
+          });
+
+        function showError(message) {
+          errorMessage.textContent = message;
+          errorContainer.classList.remove('hidden');
+          shortUrlContainer.classList.add('hidden');
+        }
       }
 
-      const response = await fetch('/api/shorten', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ longUrl }),
-      });
+      function copyUrl() {
+        var shortUrlInput = document.getElementById('shortUrlInput');
 
-      const data = await response.json();
-      const { shortUrl } = data;
+        shortUrlInput.select();
+        shortUrlInput.setSelectionRange(0, 99999); // For mobile devices
 
-      shortUrlInput.value = shortUrl;
-      shortUrlContainer.style.display = 'block';
+        document.execCommand('copy');
+      }
+    </script>
+  </body>
 
-      // Replace var urf with the short URL
-      const scriptElement = document.createElement('script');
-      scriptElement.innerHTML = `
-        var urf = '${shortUrl}';
-      `;
-      document.head.appendChild(scriptElement);
-    }
-  </script>
-</body>
 </html>
